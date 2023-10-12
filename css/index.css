@@ -1,0 +1,29 @@
+
+:root{
+  --textoBotonColor: #F1FFE7;
+}
+
+body{
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Clase para ocultar flechas de incremento y decremento */
+.no-spin::-webkit-outer-spin-button,
+.no-spin::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.form{
+  max-width: 650px;
+}
+
+.textoBoton{
+  color: var(--textoBotonColor);
+}
+
+.tabla{
+  width: 100%;
+  overflow-x: scroll;
+}

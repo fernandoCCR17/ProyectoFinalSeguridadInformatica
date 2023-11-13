@@ -2,11 +2,12 @@ const botonCifrar = document.querySelector("#cifrar")
 const botonDescifrar = document.querySelector("#descifrar")
 const divMensajeProcesado = document.querySelector("#mensajeProcesado")
 
-botonCifrar.addEventListener("click", cifrarMensaje)
-botonDescifrar.addEventListener("click", descifrarMensaje)
+botonCifrar.addEventListener("click", handleCesar)
+botonDescifrar.addEventListener("click", handleCesar)
 
-function cifrarMensaje(e){
+function handleCesar(e){
     e.preventDefault()
+    const tipo = e.target.value;
 
     const datos = validaForm()
 
@@ -31,65 +32,29 @@ function cifrarMensaje(e){
     contenedorTabla.appendChild(nuevaTabla);
 
     datos[2].forEach(letra => {
-        const newIndice = alphabet.findIndex(e => e === letra)
-        newIndice != -1 ? mensajeProcesado.push(llave[newIndice]) : mensajeProcesado.push(letra)
+        const newIndice = tipo === "cifrar" ? alphabet.findIndex(e => e === letra) : llave.findIndex(e => e === letra)
+        if(tipo === "cifrar"){
+            newIndice != -1 ? mensajeProcesado.push(llave[newIndice]) : mensajeProcesado.push(letra)
+        }else{
+            newIndice != -1 ? mensajeProcesado.push(alphabet[newIndice]) : mensajeProcesado.push(letra)
+        }
     });
 
     const tituloMensajeCifrado = document.createElement("H2")
-    tituloMensajeCifrado.textContent = "El mensaje cifrado es:"
+    tituloMensajeCifrado.textContent = `El mensaje ${tipo === "cifrar" ? "cifrado" : "descifrado"} es:`
     tituloMensajeCifrado.classList.add("font-bold", "text-xl", "md:text-4xl")
 
     divMensajeProcesado.innerHTML = ""
     const parrafoCifrado = document.createElement("P")
-    parrafoCifrado.textContent = mensajeProcesado.join("")
+    if(tipo === "cifrar"){
+        parrafoCifrado.textContent = mensajeProcesado.join("")
+    }else{
+        parrafoCifrado.textContent = mensajeProcesado.join("").replaceAll("~"," ")
+    }
     parrafoCifrado.classList.add( "bg-slate-400", "rounded-lg", "p-4", "text-sm", "md:text-base")
     divMensajeProcesado.appendChild(tituloMensajeCifrado)
     divMensajeProcesado.appendChild(parrafoCifrado)
 }
-
-function descifrarMensaje(e){
-    e.preventDefault()
-
-    const datos = validaForm()
-
-    if(Object.keys(datos[0]).length !== 0){
-        return
-    }
-
-    const mensajeProcesado = []
-
-    const llave = calcularAlfabetoCifrado(datos[1]);
-
-    // Crea la tabla con el nuevo alfabeto
-    const nuevaTabla = crearTabla(alphabet, llave);
-
-    // Encuentra el elemento en el documento donde deseas insertar la tabla (por ejemplo, con un ID)
-    const contenedorTabla = document.querySelector("#tabla");
-
-    // Limpia cualquier contenido existente en el contenedor (si es necesario)
-    contenedorTabla.innerHTML = "";
-
-    // Agrega la nueva tabla al documento
-    contenedorTabla.appendChild(nuevaTabla);
-
-    datos[2].forEach(letra => {
-        const newIndice = llave.findIndex(e => e === letra)
-        newIndice != -1 ? mensajeProcesado.push(alphabet[newIndice]) : mensajeProcesado.push(letra)
-    });
-
-    const tituloMensajeCifrado = document.createElement("H2")
-    tituloMensajeCifrado.textContent = "El mensaje descifrado es:"
-    tituloMensajeCifrado.classList.add("font-bold", "text-xl", "md:text-4xl")
-
-    divMensajeProcesado.innerHTML = ""
-    const parrafoCifrado = document.createElement("P")
-    parrafoCifrado.textContent = mensajeProcesado.join("").replaceAll("~"," ")
-    parrafoCifrado.classList.add("bg-slate-400", "rounded-lg", "p-4", "text-sm", "md:text-base")
-    divMensajeProcesado.appendChild(tituloMensajeCifrado)
-    divMensajeProcesado.appendChild(parrafoCifrado)
-    
-}
-
 
 function validaForm(){
     const inputDesplazamiento = document.querySelector("#desplazamiento").value
@@ -139,7 +104,7 @@ function crearTabla(alphabet, keyAlphabet) {
   
     // Crea la fila de encabezado (thead)
     const headerRow = document.createElement("tr");
-    alphabet.forEach((letter, index) => {
+    alphabet.forEach(letter => {
       const th = document.createElement("th");
       th.classList.add("border", "border-slate-600", "bg-slate-500");
       th.textContent = letter;
@@ -149,7 +114,7 @@ function crearTabla(alphabet, keyAlphabet) {
   
     // Crea la fila de contenido (tbody)
     const contentRow = document.createElement("tr");
-    keyAlphabet.forEach((letter, index) => {
+    keyAlphabet.forEach(letter => {
       const td = document.createElement("td");
       td.classList.add("border", "border-slate-600", "px-2");
       td.textContent = letter;
@@ -162,5 +127,5 @@ function crearTabla(alphabet, keyAlphabet) {
     table.appendChild(tbody);
   
     return table;
-  }
+}
   
